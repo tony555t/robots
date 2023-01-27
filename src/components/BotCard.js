@@ -9,12 +9,19 @@ const botTypeClasses = {
   Captain: "icon star",
 };
 
-function BotCard({ bot, clickHandler, handleDelete }) {
+function BotCard({ bot, handleBots, dischargeBot }) {
   return (
     <div className="ui column">
-      <div className="ui card" key={bot.id} onClick={() => clickHandler(bot)}>
+      <div
+        className="ui card"
+        key={bot.id}
+        onClick={(event) => {
+          event.stopPropagation()
+          handleBots(bot)
+        }}
+      >
         <div className="image">
-          <img alt="something went wrong!" src={bot.avatar_url} />
+          <img alt="oh no!" src={bot.avatar_url} />
         </div>
         <div className="content">
           <div className="header">
@@ -22,7 +29,7 @@ function BotCard({ bot, clickHandler, handleDelete }) {
             <i className={botTypeClasses[bot.bot_class]} />
           </div>
           <div className="meta text-wrap">
-            <small>{bot.catchphrase.substring(0, 32)}</small>
+            <small>{bot.catchphrase}</small>
           </div>
         </div>
         <div className="extra content">
@@ -42,14 +49,14 @@ function BotCard({ bot, clickHandler, handleDelete }) {
           <span>
             <div className="ui center aligned segment basic">
               <button
-                title="Delete this bot"
-                className="ui mini red button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(bot);
-                }}
+                className="ui mini blue button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  dischargeBot(bot);
+                }
+                }
               >
-                Delete
+                x
               </button>
             </div>
           </span>

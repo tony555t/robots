@@ -1,43 +1,50 @@
 
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import YourBotArmy from "./YourBotArmy";
 import BotCollection from "./BotCollection";
 
-function BotsPage() {
-  //start here with your code for step one
-  const [bots, setBots] = useState([]);
-  const [army, setArmy] = useState([]);
-
-  function enlist(bot) {
-    if (army.includes(bot)) return;
-    setArmy((army) => [...army, bot]);
+function BotsPage({botCollection, setBotCollection, setCheckBotCollection}) {
+  
+  const [botBox, setBotBox] = React.useState([]) 
+  const addBot = (bot) => {
+    const botInBox = botBox.find((item) => {return (item.id === bot.id)});
+    if (!botInBox) {
+      setBotBox([...botBox, bot])
+    }
   }
-  function retire(bot) {
-    setArmy((army) => army.filter((it) => it.id !== bot.id));
+ 
+  const remBot = (bot) =>{
+    const botInBox = botBox.find((item) => {return (item.id === bot.id)});
+    if (botInBox) {
+      setBotBox(botBox.filter((removedBot) => removedBot.id !== bot.id))
+    }
   }
-  useEffect(() => {
-    fetch("https://api.npoint.io/5bfae043127b83ad90bb/bots")
-      .then((res) => res.json())
-      .then((data) => setBots(data));
-  }, []);
+  
+  const dischargeBot = (bot) => {
+    setBotCollection(botCollection.filter((item) => item.id !== bot.id));
+    remBot(bot)
+    fetch(`https://api.npoint.io/1d41121ce8149651da6d/bots/${bot.id}`, {
+      method: "DELETE", 
+      headers: {"Content-Type" : "application/json",},
+  }, 
 
-  function handleDelete(bot) {
-    fetch(`https://api.npoint.io/5bfae043127b83ad90bb/bots/${bot.id}`, {
-      method: "DELETE",
-    }).then(() => {
-      setBots((bots) => bots.filter((it) => it.id !== bot.id));
-      setArmy((army) => army.filter((it) => it.id !== bot.id));
-    });
+    );
+    setCheckBotCollection(true)
   }
-
-  function deleteHandler() {}
   return (
     <div>
-      <YourBotArmy collection={army} clickHandler={retire} handleDelete={handleDelete} />
-      <BotCollection collection={bots} clickHandler={enlist} handleDelete={handleDelete} />
+      <YourBotArmy 
+        botBox = {botBox}
+        remBot = {remBot}
+        dischargeBot={dischargeBot}
+      />
+      <BotCollection 
+        botCollection={botCollection}
+        addBot={addBot}
+        dischargeBot={dischargeBot}
+      />
     </div>
-  );
+  )
 }
 
 export default BotsPage;

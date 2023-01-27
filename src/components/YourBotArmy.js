@@ -1,17 +1,26 @@
 import React from "react";
 import BotCard from "./BotCard";
 
-function YourBotArmy({ collection, clickHandler, deleteHandler }) {
-  //your bot army code here...
+function YourBotArmy({botBox, remBot, dischargeBot}) {
 
   return (
-    <div className="ui segment inverted olive bot-army">
+    <div className="ui segment inverted purple bot-army">
+      <h1>Bot-Battlr </h1>
       <div className="ui five column grid">
-        {"CLICK ON A BOT TO ADD."}
         <div className="row bot-army-row">
-          {collection.map((bot) => (
-            <BotCard key={bot.id} bot={bot} clickHandler={clickHandler} deleteHandler={deleteHandler} />
-          ))}
+          {
+            botBox.map(bot => {
+              return (
+                <BotCard 
+                  key={`${bot.name}${bot.id}`}
+                  handleBots={remBot}
+                  dischargeBot={dischargeBot}
+                  bot={bot}
+                />
+              )
+            })
+          }
+          Bot Army
         </div>
       </div>
     </div>
